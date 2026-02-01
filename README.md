@@ -132,23 +132,23 @@ uvicorn main:app --reload --port 8000
 ### Known Limitations & Next Steps
 ## Current Limitations
 
-Synchronous model inference (may block under high load)
-No authentication / API key protection
-No automatic input truncation / length validation
-Legacy action classification (Flan-T5) has limited reliability
-No caching of results
-Minimal error recovery when models fail to load or run
-Only PostgreSQL is supported (but easy to extend)
+- Synchronous model inference (may block under high load)
+- No authentication / API key protection
+- No automatic input truncation / length validation
+- Legacy action classification (Flan-T5) has limited reliability
+- No caching of results
+- Minimal error recovery when models fail to load or run
+- Only PostgreSQL is supported (but easy to extend)
 
 ## Suggested Improvements / Roadmap
 
-Add async endpoints + batch inference support
-Replace Flan-T5 action classifier with a fine-tuned small model
-Add JWT authentication or API key middleware
-Implement rate limiting (e.g. slowapi)
-Add input size validation + smart truncation
-Write unit/integration tests for model outputs & API
-Add inference time & model performance logging / metrics
-Export models to ONNX or TorchScript for faster startup/inference
-Add language detection and multi-language handling
-Build a simple web UI (Streamlit / Gradio / React) for demo & testing
+- Add async endpoints + batch inference support
+- Replace Flan-T5 action classifier with a fine-tuned small model
+- Add JWT authentication or API key middleware
+- Implement rate limiting (e.g. slowapi)
+- Add input size validation + smart truncation
+- Write unit/integration tests for model outputs & API
+- Add inference time & model performance logging / metrics
+- Export models to ONNX or TorchScript for faster startup/inference
+- Add language detection and multi-language handling
+- Build a simple web UI (Streamlit / Gradio / React) for demo & testing
