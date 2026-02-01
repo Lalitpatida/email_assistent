@@ -21,7 +21,7 @@ Email Service Layer
 │       │       │
 ┌─────────┼───────┼───────┘
 │         │       │
-Spam Classifier   Summarizer   Flan-T5 + Prompts (legacy)
+Spam Classifier   Summarizer   Flan-T5 + Prompts 
 (BERT MoE)     (seq2seq)         (google/flan-t5-base)
 │         │               │
 └─────────┼───────────────┘
@@ -50,48 +50,15 @@ The system uses **specialized fine-tuned models** for spam detection and summari
 - Models are loaded once at application startup (global scope in `llm/models.py`)  
 - Inference is currently **synchronous** (suitable for low-to-moderate load)
 
-## Prompt Design (used only in legacy Flan-T5 path)
-
-Very concise and strict prompts are used to improve reliability with the smaller Flan-T5 model:
-
-```text
-# Spam classification prompt
-Classify the following email as SPAM or NOT_SPAM.
-
-Email:
-{email}
-
-Answer only SPAM or NOT_SPAM.
-
-
-# Summarization prompt
-You are an email summarization system.
-
-Summarize the email in ONE short sentence.
-Do NOT repeat the email.
-Do NOT add new information.
-
-Email:
-{email}
-
-# Action suggestion prompt (legacy)
-Based on the email below, suggest one action:
-REPLY, ARCHIVE, or FLAG.
-
-Email:
-{email}
-
-Answer with only one word.
-
-How to Run the Project
+# How to Run the Project
 
 Prerequisites
 Python 3.9+
 PostgreSQL (local or cloud)
 
-# Steps
+##  Steps
 
-Clone the repository
+# Clone the repository
 git clone <your-repository-url>
 cd intelligent-email-assistant
 Create and activate virtual environment
@@ -104,23 +71,23 @@ source venv/bin/activate
 python -m venv venv
 venv\Scripts\activate
 
-Install dependencies
+## Install dependencies
 pip install -r requirements.txt
 
-Create .env file in the root directory
+# Create .env file in the root directory
 DATABASE_URL=postgresql://username:password@localhost:5432/email_assistant
 
-Create the database in PostgreSQL
+# Create the database in PostgreSQL
 CREATE DATABASE email_assistant;
 
-Start the API server
+# Start the API server
 uvicorn main:app --reload --port 8000
 
-API will be available at:
+# API will be available at:
 → http://localhost:8000
 → Interactive docs: http://localhost:8000/docs
 
-Project Structure
+## Project Structure
 .
 ├── main.py                     # FastAPI app entry point
 ├── database.py                 # SQLAlchemy engine & session
@@ -137,26 +104,51 @@ Project Structure
     └── email_service.py        # Business logic & DB operations
 
 
-Known Limitations & Next Steps
-Current Limitations
 
-Synchronous model inference (may block under high load)
-No authentication / API key protection
-No automatic input truncation / length validation
-Legacy action classification (Flan-T5) has limited reliability
-No caching of results
-Minimal error recovery when models fail to load or run
-Only PostgreSQL is supported (but easy to extend)
+# Examples 
+## /email/summarize
+{
+  "email_text": "Good morning,\n\nI hope this message finds you well. Unfortunately, I am unwell and will not be able to hold today's lecture or any classes for the remainder of this week. As a result, all classes are canceled.\n\nHowever, I uploaded a document that you should review before classes resume next week as scheduled.\nPlease ensure you go through the material, as it will be important for our upcoming discussions.\n\nThank you for your understanding, and I look forward to seeing you next week.\n\nBest regards,\nJames",
+  "task_type": "summary"
+}
 
-Suggested Improvements / Roadmap
+## /email/classify-spam
+{
+  "email_text": "Hey, are we still meeting for lunch today?",
+  "task_type": "spam"
+}
+{
+  "email_text": "Congratulations! You've won a $1,000 Walmart gift card. Click here to claim now.",
+  "task_type": "spam"
+}
 
-Add async endpoints + batch inference support
-Replace Flan-T5 action classifier with a fine-tuned small model
-Add JWT authentication or API key middleware
-Implement rate limiting (e.g. slowapi)
-Add input size validation + smart truncation
-Write unit/integration tests for model outputs & API
-Add inference time & model performance logging / metrics
-Export models to ONNX or TorchScript for faster startup/inference
-Add language detection and multi-language handling
-Build a simple web UI (Streamlit / Gradio / React) for demo & testing
+## /email/action
+{
+  "email_text": "Hey, are we still meeting for lunch today?",
+  "task_type": "action"
+}
+
+
+### Known Limitations & Next Steps
+## Current Limitations
+
+# Synchronous model inference (may block under high load)
+# No authentication / API key protection
+# No automatic input truncation / length validation
+# Legacy action classification (Flan-T5) has limited reliability
+# No caching of results
+# Minimal error recovery when models fail to load or run
+# Only PostgreSQL is supported (but easy to extend)
+
+## Suggested Improvements / Roadmap
+
+# Add async endpoints + batch inference support
+# Replace Flan-T5 action classifier with a fine-tuned small model
+# Add JWT authentication or API key middleware
+# Implement rate limiting (e.g. slowapi)
+# Add input size validation + smart truncation
+# Write unit/integration tests for model outputs & API
+# Add inference time & model performance logging / metrics
+# Export models to ONNX or TorchScript for faster startup/inference
+# Add language detection and multi-language handling
+# Build a simple web UI (Streamlit / Gradio / React) for demo & testing
